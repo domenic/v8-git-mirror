@@ -576,6 +576,15 @@ function ToInt32(x) {
   return %NumberToJSInt32(ToNumber(x));
 }
 
+// ES6, section 7.1.15
+function ToLength(x) {
+  if (%_IsSmi(x) && x >= 0) return x;
+
+  var len = ToInteger(x);
+  if (len <= 0) return 0;
+  return MathMin(len, $Number.MAX_SAFE_INTEGER);
+}
+
 
 // ES5, section 9.12
 function SameValue(x, y) {
@@ -586,6 +595,15 @@ function SameValue(x, y) {
     if (x === 0 && y === 0 && %_IsMinusZero(x) != %_IsMinusZero(y)) {
       return false;
     }
+  }
+  return x === y;
+}
+
+// ES6, section 7.2.4
+function SameValueZero(x, y) {
+  if (typeof x != typeof y) return false;
+  if (IS_NUMBER(x)) {
+    if (NUMBER_IS_NAN(x) && NUMBER_IS_NAN(y)) return true;
   }
   return x === y;
 }

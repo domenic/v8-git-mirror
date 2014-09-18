@@ -123,6 +123,41 @@ function ArrayFill(value /* [, start [, end ] ] */) {  // length == 1
   return array;
 }
 
+// Proposed for ES7
+// https://github.com/domenic/Array.prototype.contains/
+// 3fb531d074eddf5d23e0a46b57ea48932e1fac69
+function ArrayContains(searchElement, fromIndex) {
+  var array = ToObject(this);
+  var len = ToLength(array.length);
+
+  if (len === 0) {
+    return false;
+  }
+
+  var n = ToInteger(fromIndex);
+
+  var k;
+  if (n >= 0) {
+    k = n;
+  } else {
+    k = len + n;
+    if (k < 0) {
+      k = 0;
+    }
+  }
+
+  while (k < len) {
+    var elementK = array[k];
+    if (SameValueZero(searchElement, elementK)) {
+      return true;
+    }
+
+    ++k;
+  }
+
+  return false;
+}
+
 // ES6, draft 05-22-14, section 22.1.2.3
 function ArrayOf() {
   var length = %_ArgumentsLength();
@@ -146,8 +181,11 @@ function HarmonyArrayExtendArrayPrototype() {
     "of", ArrayOf
   ));
 
+  %FunctionSetLength(ArrayContains, 1);
+
   // Set up the non-enumerable functions on the Array prototype object.
   InstallFunctions($Array.prototype, DONT_ENUM, $Array(
+    "contains", ArrayContains,
     "find", ArrayFind,
     "findIndex", ArrayFindIndex,
     "fill", ArrayFill
