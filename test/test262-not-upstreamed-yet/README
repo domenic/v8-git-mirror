@@ -1,0 +1,6 @@
+This directory contains code for running test262-format tests that have been
+checked in under 'data' in this directory, and have not yet been upstreamed to
+tc39/test262.
+
+Running these tests depends on some collateral that is retrieved by the
+test262-es6 tests. Follow those instructions to get those checked out.
